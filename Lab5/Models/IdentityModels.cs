@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Data.Entity;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -22,6 +23,13 @@ namespace Lab5.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityUser>().ToTable("Users");
         }
 
         public static ApplicationDbContext Create()

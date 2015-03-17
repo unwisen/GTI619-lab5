@@ -5,8 +5,7 @@ namespace Lab5.Models
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Courrier électronique")]
+        [Display(Name = "Nom d'utilisateur")]
         public string Email { get; set; }
     }
 
@@ -38,8 +37,7 @@ namespace Lab5.Models
     public class LoginViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Courrier électronique")]
+        [Display(Name = "Nom d'utilisateur")]
         public string Email { get; set; }
 
         [Required]
@@ -73,8 +71,7 @@ namespace Lab5.Models
     public class ResetPasswordViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Courrier électronique")]
+        [Display(Name = "Nom d'utilisateur")]
         public string Email { get; set; }
 
         [Required]
@@ -94,8 +91,7 @@ namespace Lab5.Models
     public class ForgotPasswordViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Courrier électronique")]
+        [Display(Name = "Nom d'utilisateur")]
         public string Email { get; set; }
     }
 }

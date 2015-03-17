@@ -69,6 +69,5 @@ C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\fr\Microsoft.Owin.Security.Faceboo
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\fr\Microsoft.Owin.Security.Google.resources.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\fr\Microsoft.Owin.Security.Twitter.resources.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\fr\Microsoft.Owin.Security.MicrosoftAccount.resources.dll
-C:\Users\User\Desktop\Workspace\Lab5\Lab5\obj\Debug\Lab5.csprojResolveAssemblyReference.cache
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\obj\Debug\Lab5.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\obj\Debug\Lab5.pdb

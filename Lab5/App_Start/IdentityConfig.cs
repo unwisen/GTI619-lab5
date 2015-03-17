@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Data.Entity;
+using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -8,6 +9,86 @@ using Lab5.Models;
 namespace Lab5
 {
     // Configurer l'application que le gestionnaire des utilisateurs a utilisée dans cette application. UserManager est défini dans ASP.NET Identity et est utilisé par l'application.
+    // DropCreateDatabaseAlways<ApplicationDbContext>
+    public class MyDbInitializer : DropCreateDatabaseIfModelChanges<ApplicationDbContext>
+    {
+        protected override void Seed(ApplicationDbContext context)
+        {
+            InitializeIdentityForEF(context);
+            base.Seed(context);
+        }
+
+        private void InitializeIdentityForEF(ApplicationDbContext context)
+        {
+            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+            var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+
+            string roleName1 = "Administrateur";       
+
+            // Create Role Administrateur if it does not exist
+            if (!RoleManager.RoleExists(roleName1))
+            {
+                var roleresult = RoleManager.Create(new IdentityRole(roleName1));
+            }
+
+            // Create User=Administrateur with password=Administrateur
+            var user1 = new ApplicationUser();
+            user1.UserName = "Administrateur";
+            string password1 = "Administrateur";
+
+            var adminresult1 = UserManager.Create(user1, password1);
+
+            // Add User Admin to role Admin
+            if (adminresult1.Succeeded)
+            {
+                var result = UserManager.AddToRole(user1.Id, roleName1);
+            }
+
+
+
+            string roleName2 = "Préposé au cercle";
+            // Create Role « Préposé au cercle » if it does not exist
+            if (!RoleManager.RoleExists(roleName2))
+            {
+                var roleresult = RoleManager.Create(new IdentityRole(roleName2));
+            }
+
+            // Create User=Administrateur with password=Administrateur
+            var user2 = new ApplicationUser();
+            user2.UserName = "Utilisateur1";
+            string password2 = "Utilisateur1";
+
+            var adminresult2 = UserManager.Create(user2, password2);
+
+            // Add User Admin to role Admin
+            if (adminresult2.Succeeded)
+            {
+                var result = UserManager.AddToRole(user2.Id, roleName2);
+            }
+
+
+
+            string roleName3 = "Préposé au carré";
+            // Create Role « Préposé au cercle » if it does not exist
+            if (!RoleManager.RoleExists(roleName3))
+            {
+                var roleresult = RoleManager.Create(new IdentityRole(roleName3));
+            }
+
+            // Create User=Administrateur with password=Administrateur
+            var user3 = new ApplicationUser();
+            user3.UserName = "Utilisateur2";
+            string password3 = "Utilisateur2";
+
+            var adminresult3 = UserManager.Create(user3, password3);
+
+            // Add User Admin to role Admin
+            if (adminresult3.Succeeded)
+            {
+                var result = UserManager.AddToRole(user3.Id, roleName3);
+            }
+        }
+    }
 
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
