@@ -23,8 +23,14 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Accueil", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Carré", "Square", "Shape")</li>
-                    <li>@Html.ActionLink("Cercle", "Circle", "Shape")</li>
+                    @if (User.IsInRole("Administrateur") || User.IsInRole("Préposé au carré"))
+                    {
+                        <li>@Html.ActionLink("Carré", "Square", "Shape")</li>
+                    }
+                    @if (User.IsInRole("Administrateur") || User.IsInRole("Préposé au cercle"))
+                    {
+                        <li>@Html.ActionLink("Cercle", "Circle", "Shape")</li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
