@@ -31,6 +31,10 @@
                     {
                         <li>@Html.ActionLink("Cercle", "Circle", "Shape")</li>
                     }
+                    @if (User.IsInRole("Administrateur"))
+                    {
+                        <li>@Html.ActionLink("Paramètres", "Index", "IdentityConfigurations")</li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -9,8 +10,8 @@ using Lab5.Models;
 namespace Lab5
 {
     // Configurer l'application que le gestionnaire des utilisateurs a utilisée dans cette application. UserManager est défini dans ASP.NET Identity et est utilisé par l'application.
-    // DropCreateDatabaseAlways<ApplicationDbContext>
-    public class MyDbInitializer : DropCreateDatabaseIfModelChanges<ApplicationDbContext>
+    // DropCreateDatabaseIfModelChanges<ApplicationDbContext>
+    public class MyDbInitializer : DropCreateDatabaseAlways<ApplicationDbContext>
     {
         protected override void Seed(ApplicationDbContext context)
         {
@@ -115,6 +116,15 @@ namespace Lab5
                 RequireLowercase = true,
                 RequireUppercase = true,
             };
+
+            // Configure user lockout defaults
+            manager.UserLockoutEnabledByDefault = true;
+            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(1);
+            manager.MaxFailedAccessAttemptsBeforeLockout = 2;
+            //manager.SetLockoutEndDate()
+                
+            
+
             // Inscrire les fournisseurs d'authentification à 2 facteurs. Cette application utilise le téléphone et les e-mails comme procédure de réception de code pour confirmer l'utilisateur
             // Vous pouvez indiquer votre propre fournisseur et vous connecter ici.
             manager.RegisterTwoFactorProvider("PhoneCode", new PhoneNumberTokenProvider<ApplicationUser>
@@ -129,10 +139,12 @@ namespace Lab5
             manager.EmailService = new EmailService();
             manager.SmsService = new SmsService();
             var dataProtectionProvider = options.DataProtectionProvider;
+            
             if (dataProtectionProvider != null)
             {
                 manager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
+            
             return manager;
         }
     }

@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -6,6 +8,21 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Lab5.Models
 {
+
+    public class IdentityConfiguration
+    {
+        [Key]
+        [Required]
+        public int Id
+        {
+            get;
+            set;
+        }
+        public int MaxFailedAccessAttemptsBeforeLockout { get; set; }
+        public int DefaultAccountLockoutTimeSpan { get; set; }
+        public bool SetLockout { get; set; }
+    }
+
     // Vous pouvez ajouter des données de profil pour l'utilisateur en ajoutant plus de propriétés à votre classe ApplicationUser ; consultez http://go.microsoft.com/fwlink/?LinkID=317594 pour en savoir davantage.
     public class ApplicationUser : IdentityUser
     {
@@ -36,5 +53,6 @@ namespace Lab5.Models
         {
             return new ApplicationDbContext();
         }
+        public DbSet<IdentityConfiguration> IdentityConfigurations { get; set; }
     }
 }
