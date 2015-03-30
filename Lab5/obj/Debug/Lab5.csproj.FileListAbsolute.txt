@@ -71,3 +71,11 @@ C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\fr\Microsoft.Owin.Security.Twitter
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\fr\Microsoft.Owin.Security.MicrosoftAccount.resources.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\obj\Debug\Lab5.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\obj\Debug\Lab5.pdb
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.dll
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.Configuration.dll
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.dll
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.pdb
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.xml
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.xml
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.Configuration.xml
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\obj\Debug\Lab5.csprojResolveAssemblyReference.cache

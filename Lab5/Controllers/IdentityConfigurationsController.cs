@@ -7,17 +7,29 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Lab5.Models;
+using Lab5.Services;
 
 namespace Lab5.Controllers
 {
     public class IdentityConfigurationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly IIdentityConfigurationsViewModelReader reader = null;
+
+        public IdentityConfigurationsController()
+        : this(new IdentityConfigurationsViewModelService()){
+        }
+
+        public IdentityConfigurationsController(IIdentityConfigurationsViewModelReader reader)
+        {
+            this.reader = reader;
+        }
 
         // GET: IdentityConfigurations
         public ActionResult Index()
         {
-            return View(db.IdentityConfigurations.ToList());
+            var viewModel = reader.GetIdentityConfigurationsViewModel();
+            return View(viewModel);
         }
 
         // GET: IdentityConfigurations/Details/5
@@ -122,6 +134,22 @@ namespace Lab5.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ActionResult LockUser(int id)
+        {
+            var user = db.Users.ToList();
+            if (user[id].LockoutEnabled)
+            {
+                user[id].LockoutEnabled = false;
+            }
+            else
+            {
+                user[id].LockoutEnabled = true;
+            }
+            
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }

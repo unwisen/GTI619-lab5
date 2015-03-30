@@ -58,10 +58,18 @@ namespace Lab5.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindAsync(model.Email, model.Password);
-                if (user != null)
+                //var idConfig = _dbContext.IdentityConfigurations;
+                if (user != null) 
                 {
-                    await SignInAsync(user, model.RememberMe);
-                    return RedirectToLocal(returnUrl);
+                    /*if (user.LockoutEnabled)
+                    {
+                        ModelState.AddModelError("", "Vous etes blocké.");
+                    }
+                    else
+                    {*/
+                        await SignInAsync(user, model.RememberMe);
+                        return RedirectToLocal(returnUrl);
+                    //}
                 }
                 else
                 {

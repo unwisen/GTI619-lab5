@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -20,7 +22,11 @@ namespace Lab5.Models
         }
         public int MaxFailedAccessAttemptsBeforeLockout { get; set; }
         public int DefaultAccountLockoutTimeSpan { get; set; }
-        public bool SetLockout { get; set; }
+        public int RequiredLength { get; set; }
+        public bool RequireNonLetterOrDigit { get; set; }
+        public bool RequireDigit { get; set; }
+        public bool RequireLowercase { get; set; }
+        public bool RequireUppercase { get; set; }
     }
 
     // Vous pouvez ajouter des données de profil pour l'utilisateur en ajoutant plus de propriétés à votre classe ApplicationUser ; consultez http://go.microsoft.com/fwlink/?LinkID=317594 pour en savoir davantage.
