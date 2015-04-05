@@ -173,6 +173,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IdentityConfigurationsController.cs" />
     <Compile Include="Controllers\ShapeController.cs" />
+    <Compile Include="CustomAttributes\RequireSecureConnectionFilter.cs" />
     <Compile Include="Data\CustomerContext.cs" />
     <Compile Include="Data\DatabaseInitialiser.cs" />
     <Compile Include="Data\DataContainer.cs" />
@@ -252,7 +253,10 @@
     <Content Include="Views\Shape\Circle.cshtml" />
     <Content Include="Views\Shape\Square.cshtml" />
     <Content Include="Views\IdentityConfigurations\Index.cshtml" />
-    <Content Include="Views\IdentityConfigurations\Editor\UsersEditor.cshtml" />
+    <Content Include="Views\IdentityConfigurations\EditIdentityConfigurations.cshtml" />
+    <Content Include="Views\IdentityConfigurations\_UsersView.cshtml" />
+    <Content Include="Views\IdentityConfigurations\EditUserConfigurations.cshtml" />
+    <Content Include="Views\IdentityConfigurations\_IdentityConfigurationsView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

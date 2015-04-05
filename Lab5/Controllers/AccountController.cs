@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -18,6 +19,7 @@ namespace Lab5.Controllers
     public class AccountController : Controller
     {
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext _context;
 
         public AccountController()
         {
@@ -25,6 +27,7 @@ namespace Lab5.Controllers
 
         public AccountController(ApplicationUserManager userManager)
         {
+            _context = new ApplicationDbContext();
             UserManager = userManager;
         }
 
@@ -57,24 +60,38 @@ namespace Lab5.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindAsync(model.Email, model.Password);
-                //var idConfig = _dbContext.IdentityConfigurations;
-                if (user != null) 
+                if (await UserManager.IsLockedOutAsync(model.Email))
                 {
-                    /*if (user.LockoutEnabled)
+                    var lockoutCount = await UserManager.GetLockoutCountByName(model.Email);
+                    if (lockoutCount == 1)
                     {
-                        ModelState.AddModelError("", "Vous etes blocké.");
+                        ModelState.AddModelError("",
+                            "Vous êtes bloqué momentanément dû à un nombre trop grand de tentatives. Réessayer plus tard.");
                     }
                     else
-                    {*/
-                        await SignInAsync(user, model.RememberMe);
-                        return RedirectToLocal(returnUrl);
-                    //}
+                    {
+                        ModelState.AddModelError("",
+                            "Vous êtes bloqué indéfiniment dû à un nombre trop grand de tentatives. Veuillez contacter l'administrateur pour plus de détails : francis.gtessier@gmail.com");
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Nom d'utilisateur ou mot de passe non valide.");
+                    var user = await UserManager.FindAsync(model.Email, model.Password);
+                    if (user == null)
+                    {
+                        await UserManager.AccessFailedProcessAsync(model.Email);
+                        ModelState.AddModelError("", "Nom d'utilisateur ou mot de passe non valide.");
+                    }
+                    else
+                    {
+                        await SignInAsync(user, model.RememberMe);
+                        return RedirectToLocal(returnUrl);
+                    }
                 }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Nom d'utilisateur ou mot de passe non valide.");
             }
 
             // Si nous sommes arrivés là, un échec s’est produit. Réafficher le formulaire
@@ -503,6 +520,7 @@ namespace Lab5.Controllers
         private bool HasPassword()
         {
             var user = UserManager.FindById(User.Identity.GetUserId());
+
             if (user != null)
             {
                 return user.PasswordHash != null;

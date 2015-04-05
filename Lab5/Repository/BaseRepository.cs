@@ -3,80 +3,122 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
+using System.Threading.Tasks;
 using Lab5.Models;
-using Uow.Package.Data;
 
 namespace Lab5.Repository
 {
-    public class BaseRepository<TEntity> where TEntity : class
+    public class BaseRepository<TObject> where TObject : class
     {
-        internal ApplicationDbContext context;
-        internal DbSet<TEntity> dbSet;
+        protected ApplicationDbContext context;
 
         public BaseRepository(ApplicationDbContext context)
         {
             this.context = context;
-            this.dbSet = context.Set<TEntity>();
         }
 
-        public virtual IEnumerable<TEntity> Get(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = "")
+        public ICollection<TObject> GetAll()
         {
-            IQueryable<TEntity> query = dbSet;
+            return context.Set<TObject>().ToList();
+        }
 
-            if (filter != null)
+        public async Task<ICollection<TObject>> GetAllAsync()
+        {
+            return await context.Set<TObject>().ToListAsync();
+        }
+
+        public TObject Get(int id)
+        {
+            return context.Set<TObject>().Find(id);
+        }
+
+        public async Task<TObject> GetAsync(int id)
+        {
+            return await context.Set<TObject>().FindAsync(id);
+        }
+
+        public TObject Find(Expression<Func<TObject, bool>> match)
+        {
+            return context.Set<TObject>().SingleOrDefault(match);
+        }
+
+        public async Task<TObject> FindAsync(Expression<Func<TObject, bool>> match)
+        {
+            return await context.Set<TObject>().SingleOrDefaultAsync(match);
+        }
+
+        public ICollection<TObject> FindAll(Expression<Func<TObject, bool>> match)
+        {
+            return context.Set<TObject>().Where(match).ToList();
+        }
+
+        public async Task<ICollection<TObject>> FindAllAsync(Expression<Func<TObject, bool>> match)
+        {
+            return await context.Set<TObject>().Where(match).ToListAsync();
+        }
+
+        public TObject Add(TObject t)
+        {
+            context.Set<TObject>().Add(t);
+            context.SaveChanges();
+            return t;
+        }
+
+        public async Task<TObject> AddAsync(TObject t)
+        {
+            context.Set<TObject>().Add(t);
+            await context.SaveChangesAsync();
+            return t;
+        }
+
+        public TObject Update(TObject updated, int key)
+        {
+            if (updated == null)
+                return null;
+
+            TObject existing = context.Set<TObject>().Find(key);
+            if (existing != null)
             {
-                query = query.Where(filter);
+                context.Entry(existing).CurrentValues.SetValues(updated);
+                context.SaveChanges();
             }
+            return existing;
+        }
 
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        public async Task<TObject> UpdateAsync(TObject updated, int key)
+        {
+            if (updated == null)
+                return null;
+
+            TObject existing = await context.Set<TObject>().FindAsync(key);
+            if (existing != null)
             {
-                query = query.Include(includeProperty);
+                context.Entry(existing).CurrentValues.SetValues(updated);
+                await context.SaveChangesAsync();
             }
-
-            if (orderBy != null)
-            {
-                return orderBy(query).ToList();
-            }
-            else
-            {
-                return query.ToList();
-            }
+            return existing;
         }
 
-        public virtual TEntity GetByID(object id)
+        public void Delete(TObject t)
         {
-            return dbSet.Find(id);
+            context.Set<TObject>().Remove(t);
+            context.SaveChanges();
         }
 
-        public virtual void Insert(TEntity entity)
+        public async Task<int> DeleteAsync(TObject t)
         {
-            dbSet.Add(entity);
+            context.Set<TObject>().Remove(t);
+            return await context.SaveChangesAsync();
         }
 
-        public virtual void Delete(object id)
+        public int Count()
         {
-            TEntity entityToDelete = dbSet.Find(id);
-            Delete(entityToDelete);
+            return context.Set<TObject>().Count();
         }
 
-        public virtual void Delete(TEntity entityToDelete)
+        public async Task<int> CountAsync()
         {
-            if (context.Entry(entityToDelete).State == EntityState.Detached)
-            {
-                dbSet.Attach(entityToDelete);
-            }
-            dbSet.Remove(entityToDelete);
-        }
-
-        public virtual void Update(TEntity entityToUpdate)
-        {
-            dbSet.Attach(entityToUpdate);
-            context.Entry(entityToUpdate).State = EntityState.Modified;
+            return await context.Set<TObject>().CountAsync();
         }
     }
 }

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using Lab5.Models;
 
 namespace Lab5.Repository
 {
-    public class ApplicationUserRepository : BaseRepository<ApplicationUser>
+    public class ApplicationUserRepository : BaseRepository<ApplicationUser>, IApplicationUserRepository
     {
         public ApplicationUserRepository(ApplicationDbContext context) : base(context)
         {
@@ -14,8 +12,18 @@ namespace Lab5.Repository
 
         public IQueryable<ApplicationUser> GetUsers()
         {
-            var test = context.Users.ToList();
-            return context.Users;
+            return context.Users.AsQueryable();
+        }
+
+        public ApplicationUser FindById(string id)
+        {
+            return context.Users.Find(id);
+        }
+
+        public void EditUserConfigurations(ApplicationUser applicationUser)
+        {
+            context.Entry(applicationUser).State = EntityState.Modified;
+            context.SaveChanges();
         }
     }
 }

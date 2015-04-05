@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Data.Entity;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Security;
+using Lab5.Repository;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -10,17 +14,31 @@ using Lab5.Models;
 namespace Lab5
 {
     // Configurer l'application que le gestionnaire des utilisateurs a utilisée dans cette application. UserManager est défini dans ASP.NET Identity et est utilisé par l'application.
+    // 
     // DropCreateDatabaseIfModelChanges<ApplicationDbContext>
     public class MyDbInitializer : DropCreateDatabaseAlways<ApplicationDbContext>
     {
         protected override void Seed(ApplicationDbContext context)
         {
-            InitializeIdentityForEF(context);
+            InitializeIdentityForEf(context);
             base.Seed(context);
         }
 
-        private void InitializeIdentityForEF(ApplicationDbContext context)
+        private void InitializeIdentityForEf(ApplicationDbContext context)
         {
+            // Add the default identity configurations
+            var identityConfigurations = context.IdentityConfigurations.SingleOrDefault();
+            if (identityConfigurations == null)
+            {
+                context.IdentityConfigurations.Add(new IdentityConfiguration
+                {
+                    MaxFailedAccessAttemptsBeforeLockout = 2,
+                    DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(1),
+                    RequiredLength = 7
+                });
+                context.SaveChanges();
+            }
+
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
             var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
@@ -44,7 +62,9 @@ namespace Lab5
             {
                 var result = UserManager.AddToRole(user1.Id, roleName1);
             }
-
+            user1.LockoutEnabled = false;
+            context.Entry(user1).State = EntityState.Modified;
+            context.SaveChanges();
 
 
             string roleName2 = "Préposé au cercle";
@@ -99,30 +119,121 @@ namespace Lab5
         {
         }
 
-        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
+        /// <summary>
+        ///     Returns true if the user is locked out
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public override async Task<bool> IsLockedOutAsync(string username)
+        {
+            var user = await FindByNameAsync(username).ConfigureAwait(false);
+
+            if (user == null)
+            {
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "User not found",
+                    username));
+            }
+
+            //var isAdministrator = Roles.FindUsersInRole("Administrateur", username).Any();
+            if (user.LockoutEnabled)
+            {
+                if (user.LockoutCount == 2)
+                {
+                    return true;
+                }
+                if (user.LockoutCount == 1)
+                {
+                    var lockoutTime = user.LockoutEndDateUtc;
+                    var isLocked = lockoutTime >= DateTime.UtcNow;
+                    if (!isLocked && user.LockoutEndDateUtc != null)
+                    {
+                        user.LockoutEndDateUtc = null;
+                        await Store.UpdateAsync(user);
+                    }
+                    return isLocked;
+                }
+            }
+            
+            return false;
+        }
+
+        /// <summary>
+        /// Increments the access failed count for the user and if the failed access account is greater than or equal
+        /// to the MaxFailedAccessAttempsBeforeLockout and the user never been locked before (LockoutCount = 0), the 
+        /// user will be locked out for the next DefaultAccountLockoutTimeSpan and the AccessFailedCount will be reset 
+        /// to 0. This is used for locking out the user account. If it's the user already been locked before (LockoutCount = 1),
+        /// lock the user indefinitively.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task AccessFailedProcessAsync(string username)
+        {
+            var user = await FindByNameAsync(username).ConfigureAwait(false);
+            if (user == null)
+            {
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "User not found",
+                    username));
+            }
+            user.AccessFailedCount++; 
+
+            if ( user.AccessFailedCount == MaxFailedAccessAttemptsBeforeLockout)
+            {
+                if (user.LockoutCount == 1)
+                {
+                    user.LockoutCount++;
+                    await ResetAccessFailedCountAsync(user.Id);
+
+                }
+                else if (user.LockoutCount == 0)
+                {
+                    user.LockoutCount++;
+                    await ResetAccessFailedCountAsync(user.Id);
+
+                    user.LockoutEndDateUtc = DateTime.UtcNow.Add(DefaultAccountLockoutTimeSpan);
+                }
+            }
+            await Store.UpdateAsync(user);
+        }
+
+        public async Task<int> GetLockoutCountByName(string username)
+        {
+            var user = await FindByNameAsync(username).ConfigureAwait(false);
+            if (user == null)
+            {
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "User not found",
+                    username));
+            }
+            return user.LockoutCount;
+        }
+
+        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
             var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
             // Configurer la logique de validation pour les noms d'utilisateur
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
+                RequireUniqueEmail = false
             };
+
+
+            var identityConfigRepository = new IdentityConfigurationsRepository(new ApplicationDbContext());
+            var config = identityConfigRepository.GetIdentityConfigurations().SingleOrDefault();
+
             // Configurer la logique de validation pour les mots de passe
             manager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
-                RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
+                RequiredLength = config.RequiredLength,
+                RequireNonLetterOrDigit = config.RequireNonLetterOrDigit,
+                RequireDigit = config.RequireDigit,
+                RequireLowercase = config.RequireLowercase,
+                RequireUppercase = config.RequireUppercase,
             };
 
             // Configure user lockout defaults
             manager.UserLockoutEnabledByDefault = true;
-            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(1);
-            manager.MaxFailedAccessAttemptsBeforeLockout = 2;
-            //manager.SetLockoutEndDate()
+            manager.DefaultAccountLockoutTimeSpan = config.DefaultAccountLockoutTimeSpan;//TimeSpan.FromMinutes(3);
+            manager.MaxFailedAccessAttemptsBeforeLockout = config.MaxFailedAccessAttemptsBeforeLockout;
                 
             
 

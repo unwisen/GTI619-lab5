@@ -21,7 +21,7 @@ namespace Lab5.Models
             set;
         }
         public int MaxFailedAccessAttemptsBeforeLockout { get; set; }
-        public int DefaultAccountLockoutTimeSpan { get; set; }
+        public TimeSpan DefaultAccountLockoutTimeSpan { get; set; }
         public int RequiredLength { get; set; }
         public bool RequireNonLetterOrDigit { get; set; }
         public bool RequireDigit { get; set; }
@@ -29,9 +29,26 @@ namespace Lab5.Models
         public bool RequireUppercase { get; set; }
     }
 
+    public class ApplicationUserViewModel
+    {
+        public string ID { get; set; }
+        public string UserName { get; set; }
+        public int LockoutCount { get; set; }
+        public bool LockoutEnabled { get; set; }
+        public DateTime? LockoutEndDateUtc { get; set; }
+        public int AccessFailedCount { get; set; }
+    }
+
     // Vous pouvez ajouter des données de profil pour l'utilisateur en ajoutant plus de propriétés à votre classe ApplicationUser ; consultez http://go.microsoft.com/fwlink/?LinkID=317594 pour en savoir davantage.
     public class ApplicationUser : IdentityUser
     {
+        public ApplicationUser()
+        {
+            base.LockoutEnabled = true;
+        }
+
+        public int LockoutCount { get; set; } // Number of times the user was locked
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Notez qu'authenticationType doit correspondre à l'élément défini dans CookieAuthenticationOptions.AuthenticationType
@@ -59,6 +76,7 @@ namespace Lab5.Models
         {
             return new ApplicationDbContext();
         }
-        public DbSet<IdentityConfiguration> IdentityConfigurations { get; set; }
+        
+        public DbSet<IdentityConfiguration> IdentityConfigurations { get; set; } 
     }
 }

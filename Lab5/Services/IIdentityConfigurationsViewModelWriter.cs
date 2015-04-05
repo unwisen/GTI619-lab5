@@ -9,5 +9,6 @@ namespace Lab5.Services
     public interface IIdentityConfigurationsViewModelWriter
     {
         void EditIdentityConfigurations(IdentityConfigurationsViewModel model);
+        void EditUserConfigurations(ApplicationUserViewModel model);
     }
 }

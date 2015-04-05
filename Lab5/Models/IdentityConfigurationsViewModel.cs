@@ -1,10 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Lab5.Models
 {
+    public class IdentityAndUsersConfigsViewModel
+    {
+        public IdentityConfigurationsViewModel IdentityConfigurations { get; set; }
+        public IEnumerable<ApplicationUserViewModel> ApplicationUsers { get; set; }
+    }
+
     public class IdentityConfigurationsViewModel
     {
-        public int IdentityConfigurationsId { get; set; }
+        public int ID { get; set; }
         public int MaxFailedAccessAttemptsBeforeLockout { get; set; }
         public int DefaultAccountLockoutTimeSpan { get; set; }
         public int RequiredLength { get; set; }
@@ -12,7 +19,6 @@ namespace Lab5.Models
         public bool RequireDigit { get; set; }
         public bool RequireLowercase { get; set; }
         public bool RequireUppercase { get; set; }
-
-        public IEnumerable<ApplicationUser> ApplicationUsers { get; set; }
     }
+
 }
