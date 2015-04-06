@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Lab5.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -27,6 +28,7 @@ namespace Lab5.Models
         public bool RequireDigit { get; set; }
         public bool RequireLowercase { get; set; }
         public bool RequireUppercase { get; set; }
+        public bool CannotReusePassword { get; set; }
     }
 
     public class ApplicationUserViewModel
@@ -44,9 +46,10 @@ namespace Lab5.Models
     {
         public ApplicationUser()
         {
+            UserOldPassword = new List<OldPassword>();
             base.LockoutEnabled = true;
         }
-
+        public virtual ICollection<OldPassword> UserOldPassword { get; set; }
         public int LockoutCount { get; set; } // Number of times the user was locked
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -56,6 +59,21 @@ namespace Lab5.Models
             // Ajouter les revendications personnalisées de l’utilisateur ici
             return userIdentity;
         }
+    }
+
+    public class OldPassword
+    {
+        public OldPassword()
+        {
+            CreatedDate = DateTimeOffset.Now;
+        }
+ 
+        [Key, Column(Order = 0)]
+        public string HashPassword { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
+        [Key, Column(Order = 1)]
+        public string UserID { get; set; }
+        public virtual ApplicationUser AppUser { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

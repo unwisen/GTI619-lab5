@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Configuration;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Security;
+using Lab5.IdentityExtensions;
 using Lab5.Repository;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -34,7 +36,8 @@ namespace Lab5
                 {
                     MaxFailedAccessAttemptsBeforeLockout = 2,
                     DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(1),
-                    RequiredLength = 7
+                    RequiredLength = 7,
+                    CannotReusePassword = true
                 });
                 context.SaveChanges();
             }
@@ -61,6 +64,11 @@ namespace Lab5
             if (adminresult1.Succeeded)
             {
                 var result = UserManager.AddToRole(user1.Id, roleName1);
+                user1.UserOldPassword.Add(new OldPassword()
+                {
+                    UserID = user1.Id,
+                    HashPassword = user1.PasswordHash
+                });
             }
             user1.LockoutEnabled = false;
             context.Entry(user1).State = EntityState.Modified;
@@ -85,6 +93,13 @@ namespace Lab5
             if (adminresult2.Succeeded)
             {
                 var result = UserManager.AddToRole(user2.Id, roleName2);
+                user2.UserOldPassword.Add(new OldPassword()
+                {
+                    UserID = user2.Id,
+                    HashPassword = user2.PasswordHash
+                });
+                context.Entry(user2).State = EntityState.Modified;
+                context.SaveChanges();
             }
 
 
@@ -107,6 +122,13 @@ namespace Lab5
             if (adminresult3.Succeeded)
             {
                 var result = UserManager.AddToRole(user3.Id, roleName3);
+                user3.UserOldPassword.Add(new OldPassword()
+                {
+                    UserID = user3.Id,
+                    HashPassword = user3.PasswordHash
+                });
+                context.Entry(user3).State = EntityState.Modified;
+                context.SaveChanges();
             }
         }
     }
@@ -204,6 +226,66 @@ namespace Lab5
                     username));
             }
             return user.LockoutCount;
+        }
+
+        public override async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var identityConfigRepository = new IdentityConfigurationsRepository(new ApplicationDbContext());
+            var config = identityConfigRepository.GetIdentityConfigurations().SingleOrDefault();
+
+            if (await IsPreviousPassword(userId, newPassword) && config.CannotReusePassword)
+            {
+                return await Task.FromResult(IdentityResult.Failed("Vous ne pouvez pas réutilisez un mot de passe qui a déjà été utilisé pour cet utilisateur."));
+            }
+            var result = await base.ChangePasswordAsync(userId, currentPassword, newPassword);
+
+            if (result.Succeeded)
+            {   
+                await AddToOldPasswordAsync(await FindByIdAsync(userId), PasswordHasher.HashPassword(newPassword));
+            }
+            return result;
+        }
+
+        public override async Task<IdentityResult> ResetPasswordAsync(string userID, string usedToken, string newPassword)
+        {
+            var identityConfigRepository = new IdentityConfigurationsRepository(new ApplicationDbContext());
+            var config = identityConfigRepository.GetIdentityConfigurations().SingleOrDefault();
+
+            if (await IsPreviousPassword(userID, newPassword) && config.CannotReusePassword)
+            {
+                return await Task.FromResult(IdentityResult.Failed("Vous ne pouvez pas réutilisez un mot de passe qui a déjà été utilisé pour cet utilisateur."));
+            }
+
+            var result = await base.ResetPasswordAsync(userID, usedToken, newPassword);
+
+            if (result.Succeeded)
+            {
+                await AddToOldPasswordAsync(await FindByIdAsync(userID), PasswordHasher.HashPassword(newPassword));
+            }
+            return result;
+        }
+
+        private async Task<bool> IsPreviousPassword(string userId, string newPassword)
+        {
+            var user = await FindByIdAsync(userId);
+            return (user.UserOldPassword.Select(p => p.HashPassword).Any(p => PasswordHasher.VerifyHashedPassword(p, newPassword) != PasswordVerificationResult.Failed));
+        }
+
+        public Task AddToOldPasswordAsync(ApplicationUser appuser, string userpassword)
+        {
+            appuser.UserOldPassword.Add(new OldPassword()
+            {
+                UserID = appuser.Id,
+                HashPassword = userpassword
+            });
+            return Store.UpdateAsync(appuser);
+        }
+
+        public override async Task<IdentityResult> CreateAsync(ApplicationUser appuser)
+        {
+            IdentityResult result = await base.CreateAsync(appuser);
+            await AddToOldPasswordAsync(appuser, appuser.PasswordHash);
+            return result;
         }
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)

@@ -59,7 +59,8 @@ namespace Lab5.Services
                 RequireLowercase = identityConfigTask.RequireLowercase,
                 RequireNonLetterOrDigit = identityConfigTask.RequireNonLetterOrDigit,
                 RequireUppercase = identityConfigTask.RequireUppercase,
-                RequiredLength = identityConfigTask.RequiredLength
+                RequiredLength = identityConfigTask.RequiredLength,
+                CannotReusePassword = identityConfigTask.CannotReusePassword
             };
             return model;
         }
@@ -126,6 +127,7 @@ namespace Lab5.Services
             identityConfigurations.RequireNonLetterOrDigit = model.RequireNonLetterOrDigit;
             identityConfigurations.RequireUppercase = model.RequireUppercase;
             identityConfigurations.RequiredLength = model.RequiredLength;
+            identityConfigurations.CannotReusePassword = model.CannotReusePassword;
             
             _identityConfigurationsRepository.EditIdentityConfigurations(identityConfigurations);
         }

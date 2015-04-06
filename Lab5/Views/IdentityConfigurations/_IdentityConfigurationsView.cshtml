@@ -24,6 +24,9 @@
         <th>
             @Html.DisplayNameFor(model => model.RequireUppercase)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CannotReusePassword)
+        </th>
 
         <th></th>
     </tr>
@@ -49,6 +52,9 @@
         </td>
         <td>
             @Html.DisplayFor(model => model.RequireUppercase)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.CannotReusePassword)
         </td>
         <td>
             @Html.ActionLink("Edit", "EditIdentityConfigurations", new { id = Model.ID })

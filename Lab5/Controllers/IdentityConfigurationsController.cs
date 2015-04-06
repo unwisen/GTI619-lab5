@@ -56,7 +56,7 @@ namespace Lab5.Controllers
         // plus de détails, voir  http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditIdentityConfigurations([Bind(Include = "ID,MaxFailedAccessAttemptsBeforeLockout,DefaultAccountLockoutTimeSpan,RequiredLength, RequireNonLetterOrDigit, RequireDigit, RequireLowercase, RequireUppercase")] IdentityConfigurationsViewModel identityConfiguration)
+        public ActionResult EditIdentityConfigurations([Bind(Include = "ID,MaxFailedAccessAttemptsBeforeLockout,DefaultAccountLockoutTimeSpan,RequiredLength, RequireNonLetterOrDigit, RequireDigit, RequireLowercase, RequireUppercase, CannotReusePassword")] IdentityConfigurationsViewModel identityConfiguration)
         {
             if (ModelState.IsValid)
             {

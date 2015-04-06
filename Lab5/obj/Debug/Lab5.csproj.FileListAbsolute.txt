@@ -78,4 +78,3 @@ C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocatio
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.xml
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.xml
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.Configuration.xml
-C:\Users\User\Desktop\Workspace\Lab5\Lab5\obj\Debug\Lab5.csprojResolveAssemblyReference.cache
