@@ -39,6 +39,7 @@ namespace Lab5.Models
         public bool LockoutEnabled { get; set; }
         public DateTime? LockoutEndDateUtc { get; set; }
         public int AccessFailedCount { get; set; }
+        public string HashingVersion { get; set; }
     }
 
     // Vous pouvez ajouter des données de profil pour l'utilisateur en ajoutant plus de propriétés à votre classe ApplicationUser ; consultez http://go.microsoft.com/fwlink/?LinkID=317594 pour en savoir davantage.
@@ -48,9 +49,11 @@ namespace Lab5.Models
         {
             UserOldPassword = new List<OldPassword>();
             base.LockoutEnabled = true;
+            HashingVersion = "1";
         }
         public virtual ICollection<OldPassword> UserOldPassword { get; set; }
         public int LockoutCount { get; set; } // Number of times the user was locked
+        public string HashingVersion { get; set; } // Hashing algorithm version
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

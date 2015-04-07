@@ -19,6 +19,9 @@
         <th>
             @Html.DisplayNameFor(model => model.LockoutCount)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HashingVersion)
+        </th>
         <th></th>
     </tr>
 
@@ -39,6 +42,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LockoutCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HashingVersion)
             </td>
             <td>
                 @Html.ActionLink("Edit", "EditUserConfigurations", new { id = item.ID })

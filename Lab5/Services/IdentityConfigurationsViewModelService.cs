@@ -79,7 +79,8 @@ namespace Lab5.Services
                     LockoutCount = user.LockoutCount,
                     LockoutEndDateUtc = user.LockoutEndDateUtc,
                     AccessFailedCount = user.AccessFailedCount,
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    HashingVersion = user.HashingVersion
                 });
 
             return model;
@@ -102,7 +103,8 @@ namespace Lab5.Services
                     LockoutCount = user.LockoutCount,
                     LockoutEndDateUtc = user.LockoutEndDateUtc,
                     AccessFailedCount = user.AccessFailedCount,
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    HashingVersion = user.HashingVersion
                 };
 
             return model;

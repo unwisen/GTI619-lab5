@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Security;
 using Lab5.IdentityExtensions;
@@ -44,6 +45,7 @@ namespace Lab5
 
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
             var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+            UserManager.PasswordHasher = new CustomPasswordHasher();
 
             string roleName1 = "Administrateur";       
 
@@ -291,6 +293,7 @@ namespace Lab5
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
             var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            manager.PasswordHasher = new CustomPasswordHasher();
             // Configurer la logique de validation pour les noms d'utilisateur
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {

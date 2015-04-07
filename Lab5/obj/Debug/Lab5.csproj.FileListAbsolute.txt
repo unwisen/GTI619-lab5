@@ -16,6 +16,9 @@ C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Owin.Security.Google.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Owin.Security.OAuth.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Owin.Security.Twitter.dll
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.dll
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.Configuration.dll
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Web.Infrastructure.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Newtonsoft.Json.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Owin.dll
@@ -27,6 +30,10 @@ C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\System.Web.WebPages.Deployment.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\System.Web.WebPages.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\System.Web.WebPages.Razor.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\WebGrease.dll
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.pdb
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.xml
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.xml
+C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.Configuration.xml
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\System.Web.Helpers.xml
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\System.Web.Mvc.xml
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\System.Web.Optimization.xml
@@ -71,10 +78,3 @@ C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\fr\Microsoft.Owin.Security.Twitter
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\fr\Microsoft.Owin.Security.MicrosoftAccount.resources.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\obj\Debug\Lab5.dll
 C:\Users\User\Desktop\Workspace\Lab5\Lab5\obj\Debug\Lab5.pdb
-C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.dll
-C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.Configuration.dll
-C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.dll
-C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.pdb
-C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.ServiceLocation.xml
-C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.xml
-C:\Users\User\Desktop\Workspace\Lab5\Lab5\bin\Microsoft.Practices.Unity.Configuration.xml

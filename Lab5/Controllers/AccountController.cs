@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mime;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Lab5.IdentityExtensions;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Owin;
 using Lab5.Models;
 
 namespace Lab5.Controllers
@@ -84,6 +78,10 @@ namespace Lab5.Controllers
                     }
                     else
                     {
+                        if (user.HashingVersion == "1")
+                        {
+                            UserManager.PasswordHasher = new CustomPasswordHasher();
+                        }
                         await SignInAsync(user, model.RememberMe);
                         return RedirectToLocal(returnUrl);
                     }
