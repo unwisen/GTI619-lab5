@@ -1,0 +1,5 @@
+ERROR 2015-04-08 18:58:12,642 85217ms AccountController      MoveNext           - Connection attempt failed for username : Administrateur
+ERROR 2015-04-08 18:58:47,676 120251ms AccountController      MoveNext           - Connection attempt failed for username : Utilisateur1
+INFO  2015-04-08 18:59:05,047 137622ms AccountController      MoveNext           - Connection attempt succeed for username : Utilisateur1
+INFO  2015-04-08 18:59:53,423 185998ms AccountController      MoveNext           - Change password attempt succeed for username : Utilisateur1
+INFO  2015-04-08 19:09:16,059 443098ms AccountController      MoveNext           - Connection attempt succeed for username : Administrateur

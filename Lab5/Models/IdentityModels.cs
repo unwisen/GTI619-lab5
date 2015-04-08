@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -29,6 +30,16 @@ namespace Lab5.Models
         public bool RequireLowercase { get; set; }
         public bool RequireUppercase { get; set; }
         public bool CannotReusePassword { get; set; }
+    }
+
+    public enum ConnectionStatus
+    {
+        [Description("A connection attempt succeed")]
+        Succeed,
+        [Description("A connection attempt failed")]
+        Failed,
+        [Description("An user modified his password")]
+        ModifyPassword
     }
 
     public class ApplicationUserViewModel
@@ -98,6 +109,6 @@ namespace Lab5.Models
             return new ApplicationDbContext();
         }
         
-        public DbSet<IdentityConfiguration> IdentityConfigurations { get; set; } 
+        public DbSet<IdentityConfiguration> IdentityConfigurations { get; set; }
     }
 }

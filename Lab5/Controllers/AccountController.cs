@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Lab5.IdentityExtensions;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -13,7 +12,7 @@ namespace Lab5.Controllers
     public class AccountController : Controller
     {
         private ApplicationUserManager _userManager;
-        private ApplicationDbContext _context;
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public AccountController()
         {
@@ -21,7 +20,6 @@ namespace Lab5.Controllers
 
         public AccountController(ApplicationUserManager userManager)
         {
-            _context = new ApplicationDbContext();
             UserManager = userManager;
         }
 
@@ -52,44 +50,48 @@ namespace Lab5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (await UserManager.IsLockedOutAsync(model.Email))
+                ModelState.AddModelError("", "Nom d'utilisateur ou mot de passe non valide.");
+                return View(model);
+            }
+
+            var userFoundByName = await UserManager.FindByNameAsync(model.Email).ConfigureAwait(false);
+            if (userFoundByName == null)
+            {
+                _logger.Error("Connection attempt failed for username : " + model.Email);
+                ModelState.AddModelError("", "Nom d'utilisateur ou mot de passe non valide.");
+                return View(model);
+            }
+
+            var user = await UserManager.FindAsync(model.Email, model.Password);
+            if (user == null)
+            {
+                await UserManager.AccessFailedProcessAsync(model.Email);
+                _logger.Error("Connection attempt failed for username : " + model.Email);
+                ModelState.AddModelError("", "Nom d'utilisateur ou mot de passe non valide.");
+                return View(model);
+            }
+
+            if (await UserManager.IsLockedOutAsync(model.Email))
+            {
+                var lockoutCount = await UserManager.GetLockoutCountByName(model.Email);
+                if (lockoutCount == 1)
                 {
-                    var lockoutCount = await UserManager.GetLockoutCountByName(model.Email);
-                    if (lockoutCount == 1)
-                    {
-                        ModelState.AddModelError("",
-                            "Vous êtes bloqué momentanément dû à un nombre trop grand de tentatives. Réessayer plus tard.");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("",
-                            "Vous êtes bloqué indéfiniment dû à un nombre trop grand de tentatives. Veuillez contacter l'administrateur pour plus de détails : francis.gtessier@gmail.com");
-                    }
+                    ModelState.AddModelError("",
+                        "Vous êtes bloqué momentanément dû à un nombre trop grand de tentatives. Réessayer plus tard.");
                 }
                 else
                 {
-                    var user = await UserManager.FindAsync(model.Email, model.Password);
-                    if (user == null)
-                    {
-                        await UserManager.AccessFailedProcessAsync(model.Email);
-                        ModelState.AddModelError("", "Nom d'utilisateur ou mot de passe non valide.");
-                    }
-                    else
-                    {
-                        if (user.HashingVersion == "1")
-                        {
-                            UserManager.PasswordHasher = new CustomPasswordHasher();
-                        }
-                        await SignInAsync(user, model.RememberMe);
-                        return RedirectToLocal(returnUrl);
-                    }
+                    ModelState.AddModelError("",
+                        "Vous êtes bloqué indéfiniment dû à un nombre trop grand de tentatives. Veuillez contacter l'administrateur pour plus de détails : francis.gtessier@gmail.com");
                 }
             }
             else
             {
-                ModelState.AddModelError("", "Nom d'utilisateur ou mot de passe non valide.");
+                _logger.Info("Connection attempt succeed for username : " + model.Email);
+                await SignInAsync(user, model.RememberMe);
+                return RedirectToLocal(returnUrl);
             }
 
             // Si nous sommes arrivés là, un échec s’est produit. Réafficher le formulaire
@@ -306,6 +308,7 @@ namespace Lab5.Controllers
                     IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
                     if (result.Succeeded)
                     {
+                        _logger.Info("Change password attempt succeed for username : " + User.Identity.GetUserName());
                         var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
                         await SignInAsync(user, isPersistent: false);
                         return RedirectToAction("Manage", new { Message = ManageMessageId.ChangePasswordSuccess });
