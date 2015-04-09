@@ -25,6 +25,8 @@ namespace Lab5
             // Configurer le cookie de connexion
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
+                //CookieSecure = CookieSecureOption.Always,
+                ExpireTimeSpan = TimeSpan.FromMinutes(20),
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Account/Login"),
                 Provider = new CookieAuthenticationProvider

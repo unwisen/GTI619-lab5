@@ -1,0 +1,9 @@
+﻿@model Lab5.Models.IdentityAndUsersConfigsViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_IdentityConfigurationsView", Model.IdentityConfigurations)
+@Html.Partial("_UsersView", Model.ApplicationUsers)

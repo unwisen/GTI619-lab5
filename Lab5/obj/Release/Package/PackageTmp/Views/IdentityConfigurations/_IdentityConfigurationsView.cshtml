@@ -1,0 +1,64 @@
+﻿@model Lab5.Models.IdentityConfigurationsViewModel
+<h2>Paramètres générales</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.MaxFailedAccessAttemptsBeforeLockout)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DefaultAccountLockoutTimeSpan)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RequiredLength)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RequireNonLetterOrDigit)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RequireDigit)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RequireLowercase)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RequireUppercase)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CannotReusePassword)
+        </th>
+
+        <th></th>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.DisplayFor(model => model.MaxFailedAccessAttemptsBeforeLockout)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.DefaultAccountLockoutTimeSpan)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.RequiredLength)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.RequireNonLetterOrDigit)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.RequireDigit)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.RequireLowercase)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.RequireUppercase)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.CannotReusePassword)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "EditIdentityConfigurations", new { id = Model.ID })
+        </td>
+    </tr>
+
+</table>
